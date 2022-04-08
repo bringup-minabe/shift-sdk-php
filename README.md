@@ -11,6 +11,7 @@
         $ShiftSdkPhp->createToken();
     }
 
+    // Exceptions
     // @throws UnauthorizedException
     // @throws NotFoundException
     // @throws Exception
