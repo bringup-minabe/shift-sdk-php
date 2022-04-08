@@ -15,20 +15,20 @@ class ShiftSdkPhpTest extends TestCase {
     public function testSetApiBaseUrl()
     {
         $ShiftSdkPhp = new ShiftSdkPhp(
-            'http://example.com',
+            'http://localhost',
             'key',
             'secret'
         );
         $tests = [
-            'http://example.com',
-            'http://example.com/',
-            'http://example.com ',
-            'http://example.com/ ',
-            ' http://example.com/ ',
+            'http://localhost',
+            'http://localhost/',
+            'http://localhost ',
+            'http://localhost/ ',
+            ' http://localhost/ ',
         ];
         foreach ($tests as $value) {
             $this->assertEquals(
-                'http://example.com',
+                'http://localhost',
                 $ShiftSdkPhp->__setApiBaseUrl($value)
             );
         }
@@ -42,7 +42,7 @@ class ShiftSdkPhpTest extends TestCase {
     public function testSetEndPoint()
     {
         $ShiftSdkPhp = new ShiftSdkPhp(
-            'http://example.com',
+            'http://localhost',
             'key',
             'secret'
         );
@@ -75,7 +75,7 @@ class ShiftSdkPhpTest extends TestCase {
         ];
         foreach ($tests as $value) {
             $ShiftSdkPhp = new ShiftSdkPhp(
-                'http://example.com',
+                'http://localhost',
                 $value,
                 'secret'
             );
@@ -100,7 +100,7 @@ class ShiftSdkPhpTest extends TestCase {
         ];
         foreach ($tests as $value) {
             $ShiftSdkPhp = new ShiftSdkPhp(
-                'http://example.com',
+                'http://localhost',
                 'key',
                 $value
             );
