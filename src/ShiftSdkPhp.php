@@ -13,7 +13,9 @@ use Exception;
 class ShiftSdkPhp
 {
 
-    const API_PREFIX = 'ex-app';
+    const EXTERNAL_API_PREFIX = 'ex-app';
+
+    const CUSTOMER_API_PREFIX = 'customer-api';
 
     /**
      * apiBaseUrl
@@ -126,7 +128,7 @@ class ShiftSdkPhp
     {
         $curl = new \Curl\Curl();
         $curl->setHeader('Accept', 'application/json');
-        $curl->post("{$this->apiBaseUrl}/" . self::API_PREFIX . "/create-token", [
+        $curl->post("{$this->apiBaseUrl}/" . self::EXTERNAL_API_PREFIX . "/create-token", [
             'key' => $this->apiKey,
             'password' => $this->apiSecret,
         ]);
@@ -165,10 +167,11 @@ class ShiftSdkPhp
     }
 
     /**
-     * post
+     * __postApi
      *
      * @param string $endPoint
      * @param array $data
+     * @param string $prefix
      * @return mixed
      * 
      * @throws ClientErrorException
@@ -179,7 +182,7 @@ class ShiftSdkPhp
      * @throws InternalServerErrorException
      * @throws Exception
      */
-    public function post(string $endPoint, array $data)
+    private function __postApi(string $endPoint, array $data, string $prefix)
     {
         if ($endPoint === '') {
             throw new ClientErrorException('end point empty', 9001);
@@ -192,7 +195,7 @@ class ShiftSdkPhp
         $curl = new \Curl\Curl();
         $curl->setHeader('Accept', 'application/json');
         $curl->setHeader('Authorization', "Bearer {$this->token}");
-        $curl->post("{$this->apiBaseUrl}/" . self::API_PREFIX . "/{$endPoint}", $data);
+        $curl->post("{$this->apiBaseUrl}/" . $prefix . "/{$endPoint}", $data);
 
         if ($curl->error) {
             switch ($curl->error_code) {
@@ -236,10 +239,10 @@ class ShiftSdkPhp
     }
 
     /**
-     * get
+     * postExternalApp
      *
      * @param string $endPoint
-     * @param array $query
+     * @param array $data
      * @return mixed
      * 
      * @throws ClientErrorException
@@ -250,7 +253,78 @@ class ShiftSdkPhp
      * @throws InternalServerErrorException
      * @throws Exception
      */
-    public function get(string $endPoint, array $query = [])
+    public function postExternalApp(string $endPoint, array $data)
+    {
+        try {
+            $response = $this->__postApi($endPoint, $data, self::EXTERNAL_API_PREFIX);
+        } catch (UnauthorizedException $th) {
+            throw $th;
+        } catch (RoleErrorException $th) {
+            throw $th;
+        } catch (NotFoundException $th) {
+            throw $th;
+        } catch (UnprocessableEntityException $th) {
+            throw $th;
+        } catch (InternalServerErrorException $th) {
+            throw $th;
+        } catch (Exception $th) {
+            throw $th;
+        }
+        return $response;
+    }
+
+    /**
+     * postCustomerApi
+     *
+     * @param string $endPoint
+     * @param array $data
+     * @return mixed
+     * 
+     * @throws ClientErrorException
+     * @throws UnauthorizedException
+     * @throws RoleErrorException
+     * @throws NotFoundException
+     * @throws UnprocessableEntityException
+     * @throws InternalServerErrorException
+     * @throws Exception
+     */
+    public function postCustomerApi(string $endPoint, array $data)
+    {
+        try {
+            $response = $this->__postApi($endPoint, $data, self::CUSTOMER_API_PREFIX);
+        } catch (UnauthorizedException $th) {
+            throw $th;
+        } catch (RoleErrorException $th) {
+            throw $th;
+        } catch (NotFoundException $th) {
+            throw $th;
+        } catch (UnprocessableEntityException $th) {
+            throw $th;
+        } catch (InternalServerErrorException $th) {
+            throw $th;
+        } catch (Exception $th) {
+            throw $th;
+        }
+        return $response;
+    }
+
+    /**
+     * __getApi
+     *
+     * @param string $endPoint
+     * @param array $query
+     * @param string $prefix
+     * @return mixed
+     * 
+     * @throws ClientErrorException
+     * @throws UnauthorizedException
+     * @throws RoleErrorException
+     * @throws NotFoundException
+     * @throws UnprocessableEntityException
+     * @throws InternalServerErrorException
+     * @throws Exception
+     */
+    private function __getApi(string $endPoint, array $query = [], string $prefix)
     {
         if ($endPoint === '') {
             throw new ClientErrorException('end point empty', 9001);
@@ -263,7 +337,7 @@ class ShiftSdkPhp
         $curl = new \Curl\Curl();
         $curl->setHeader('Accept', 'application/json');
         $curl->setHeader('Authorization', "Bearer {$this->token}");
-        $curl->get("{$this->apiBaseUrl}/" . self::API_PREFIX . "/{$endPoint}", $query);
+        $curl->get("{$this->apiBaseUrl}/" . $prefix . "/{$endPoint}", $query);
 
         if ($curl->error) {
             switch ($curl->error_code) {
@@ -303,6 +377,74 @@ class ShiftSdkPhp
 
         $curl->close();
 
+        return $response;
+    }
+
+    /**
+     * getExternalApp
+     *
+     * @param string $endPoint
+     * @param array $query
+     * @return mixed
+     * 
+     * @throws ClientErrorException
+     * @throws UnauthorizedException
+     * @throws RoleErrorException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws Exception
+     */
+    public function getExternalApp(string $endPoint, array $query)
+    {
+        try {
+            $response = $this->__getApi($endPoint, $query, self::EXTERNAL_API_PREFIX);
+        } catch (UnauthorizedException $th) {
+            throw $th;
+        } catch (RoleErrorException $th) {
+            throw $th;
+        } catch (NotFoundException $th) {
+            throw $th;
+        } catch (UnprocessableEntityException $th) {
+            throw $th;
+        } catch (InternalServerErrorException $th) {
+            throw $th;
+        } catch (Exception $th) {
+            throw $th;
+        }
+        return $response;
+    }
+
+    /**
+     * getCustomerApi
+     *
+     * @param string $endPoint
+     * @param array $query
+     * @return mixed
+     * 
+     * @throws ClientErrorException
+     * @throws UnauthorizedException
+     * @throws RoleErrorException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws Exception
+     */
+    public function getCustomerApi(string $endPoint, array $query)
+    {
+        try {
+            $response = $this->__getApi($endPoint, $query, self::CUSTOMER_API_PREFIX);
+        } catch (UnauthorizedException $th) {
+            throw $th;
+        } catch (RoleErrorException $th) {
+            throw $th;
+        } catch (NotFoundException $th) {
+            throw $th;
+        } catch (UnprocessableEntityException $th) {
+            throw $th;
+        } catch (InternalServerErrorException $th) {
+            throw $th;
+        } catch (Exception $th) {
+            throw $th;
+        }
         return $response;
     }
 }
