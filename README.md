@@ -14,4 +14,5 @@
     // Exceptions
     // @throws UnauthorizedException
     // @throws NotFoundException
+    // @throws InternalServerErrorException
     // @throws Exception

@@ -2,8 +2,12 @@
 
 namespace BringupMinabe\ShiftSdkPhp;
 
+use BringupMinabe\ShiftSdkPhp\Exception\ClientErrorException;
+use BringupMinabe\ShiftSdkPhp\Exception\InternalServerErrorException;
 use BringupMinabe\ShiftSdkPhp\Exception\NotFoundException;
+use BringupMinabe\ShiftSdkPhp\Exception\RoleErrorException;
 use BringupMinabe\ShiftSdkPhp\Exception\UnauthorizedException;
+use BringupMinabe\ShiftSdkPhp\Exception\UnprocessableEntityException;
 use Exception;
 
 class ShiftSdkPhp
@@ -113,6 +117,7 @@ class ShiftSdkPhp
      * 
      * @throws UnauthorizedException
      * @throws NotFoundException
+     * @throws InternalServerErrorException
      * @throws Exception
      */
     public function createToken(): void
@@ -135,6 +140,11 @@ class ShiftSdkPhp
                     throw new NotFoundException($curl->error_message, $curl->error_code);
                     break;
 
+                case 500:
+                    $curl->close();
+                    throw new InternalServerErrorException($curl->error_message, $curl->error_code);
+                    break;
+
                 default:
                     $curl->close();
                     throw new Exception($curl->error_message, $curl->error_code);
@@ -150,5 +160,75 @@ class ShiftSdkPhp
             }
         }
         $curl->close();
+    }
+
+    /**
+     * post
+     *
+     * @param string $endPoint
+     * @param array $data
+     * @return mixed
+     * 
+     * @throws ClientErrorException
+     * @throws UnauthorizedException
+     * @throws RoleErrorException
+     * @throws NotFoundException
+     * @throws UnprocessableEntityException
+     * @throws InternalServerErrorException
+     * @throws Exception
+     */
+    public function post(string $endPoint, array $data)
+    {
+        if ($endPoint === '') {
+            throw new ClientErrorException('end point empty', 9001);
+        }
+
+        $response = [];
+
+        $endPoint = $this->__setEndPoint($endPoint);
+        
+        $curl = new \Curl\Curl();
+        $curl->setHeader('Accept', 'application/json');
+        $curl->post("{$this->apiBaseUrl}/{$endPoint}", $data);
+
+        if ($curl->error) {
+            switch ($curl->error_code) {
+                case 401:
+                    $curl->close();
+                    throw new UnauthorizedException($curl->error_message, $curl->error_code);
+                    break;
+
+                case 403:
+                    $curl->close();
+                    throw new RoleErrorException($curl->error_message, $curl->error_code);
+                    break;
+
+                case 404:
+                    $curl->close();
+                    throw new NotFoundException($curl->error_message, $curl->error_code);
+                    break;
+
+                case 422:
+                    $curl->close();
+                    throw new UnprocessableEntityException($curl->error_message, $curl->error_code);
+                    break;
+
+                case 500:
+                    $curl->close();
+                    throw new InternalServerErrorException($curl->error_message, $curl->error_code);
+                    break;
+
+                default:
+                    $curl->close();
+                    throw new Exception($curl->error_message, $curl->error_code);
+                    break;
+            }
+        } else {
+            $response = json_decode($curl->response, true);
+        }
+
+        $curl->close();
+
+        return $response;
     }
 }
