@@ -239,7 +239,7 @@ class ShiftSdkPhp
      * get
      *
      * @param string $endPoint
-     * @param array $data
+     * @param array $query
      * @return mixed
      * 
      * @throws ClientErrorException
@@ -250,7 +250,7 @@ class ShiftSdkPhp
      * @throws InternalServerErrorException
      * @throws Exception
      */
-    public function get(string $endPoint, array $data)
+    public function get(string $endPoint, array $query = [])
     {
         if ($endPoint === '') {
             throw new ClientErrorException('end point empty', 9001);
@@ -263,7 +263,7 @@ class ShiftSdkPhp
         $curl = new \Curl\Curl();
         $curl->setHeader('Accept', 'application/json');
         $curl->setHeader('Authorization', "Bearer {$this->token}");
-        $curl->get("{$this->apiBaseUrl}/" . self::API_PREFIX . "/{$endPoint}", $data);
+        $curl->get("{$this->apiBaseUrl}/" . self::API_PREFIX . "/{$endPoint}", $query);
 
         if ($curl->error) {
             switch ($curl->error_code) {
