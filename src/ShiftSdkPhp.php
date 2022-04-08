@@ -394,7 +394,7 @@ class ShiftSdkPhp
      * @throws InternalServerErrorException
      * @throws Exception
      */
-    public function getExternalApp(string $endPoint, array $query)
+    public function getExternalApp(string $endPoint, array $query = [])
     {
         try {
             $response = $this->__getApi($endPoint, $query, self::EXTERNAL_API_PREFIX);
@@ -428,7 +428,7 @@ class ShiftSdkPhp
      * @throws InternalServerErrorException
      * @throws Exception
      */
-    public function getCustomerApi(string $endPoint, array $query)
+    public function getCustomerApi(string $endPoint, array $query = [])
     {
         try {
             $response = $this->__getApi($endPoint, $query, self::CUSTOMER_API_PREFIX);
