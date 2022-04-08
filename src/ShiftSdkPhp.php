@@ -191,6 +191,7 @@ class ShiftSdkPhp
         
         $curl = new \Curl\Curl();
         $curl->setHeader('Accept', 'application/json');
+        $curl->setHeader('Authorization', "Bearer {$this->token}");
         $curl->post("{$this->apiBaseUrl}/" . self::API_PREFIX . "/{$endPoint}", $data);
 
         if ($curl->error) {
@@ -261,6 +262,7 @@ class ShiftSdkPhp
         
         $curl = new \Curl\Curl();
         $curl->setHeader('Accept', 'application/json');
+        $curl->setHeader('Authorization', "Bearer {$this->token}");
         $curl->get("{$this->apiBaseUrl}/" . self::API_PREFIX . "/{$endPoint}", $data);
 
         if ($curl->error) {
