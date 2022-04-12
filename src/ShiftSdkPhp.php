@@ -46,6 +46,13 @@ class ShiftSdkPhp
     protected $token;
 
     /**
+     * validateErrorMessages
+     *
+     * @var array
+     */
+    private $validateErrorMessages = [];
+
+    /**
      * __construct
      *
      * @param string $apiBaseUrl
@@ -167,6 +174,16 @@ class ShiftSdkPhp
     }
 
     /**
+     * getValidateErrorMessages
+     *
+     * @return array
+     */
+    public function getValidateErrorMessages():array
+    {
+        return $this->validateErrorMessages;
+    }
+
+    /**
      * __postApi
      *
      * @param string $endPoint
@@ -196,6 +213,7 @@ class ShiftSdkPhp
         $curl->setHeader('Accept', 'application/json');
         $curl->setHeader('Authorization', "Bearer {$this->token}");
         $curl->post("{$this->apiBaseUrl}/" . $prefix . "/{$endPoint}", $data);
+        $response = json_decode($curl->response, true);
 
         if ($curl->error) {
             switch ($curl->error_code) {
@@ -216,6 +234,10 @@ class ShiftSdkPhp
 
                 case 422:
                     $curl->close();
+                    // set validate error messages
+                    if (is_array($response) && isset($response['errors'])) {
+                        $this->validateErrorMessages = $response;
+                    }
                     throw new UnprocessableEntityException($curl->error_message, $curl->error_code);
                     break;
 
@@ -229,8 +251,6 @@ class ShiftSdkPhp
                     throw new Exception($curl->error_message, $curl->error_code);
                     break;
             }
-        } else {
-            $response = json_decode($curl->response, true);
         }
 
         $curl->close();
@@ -338,6 +358,7 @@ class ShiftSdkPhp
         $curl->setHeader('Accept', 'application/json');
         $curl->setHeader('Authorization', "Bearer {$this->token}");
         $curl->get("{$this->apiBaseUrl}/" . $prefix . "/{$endPoint}", $query);
+        $response = json_decode($curl->response, true);
 
         if ($curl->error) {
             switch ($curl->error_code) {
@@ -371,8 +392,6 @@ class ShiftSdkPhp
                     throw new Exception($curl->error_message, $curl->error_code);
                     break;
             }
-        } else {
-            $response = json_decode($curl->response, true);
         }
 
         $curl->close();
