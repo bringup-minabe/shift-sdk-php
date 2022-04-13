@@ -1,5 +1,9 @@
 # Shift SDK PHP
 
+## Installation
+
+    composer install bringup-minabe/shift-sdk-php
+
 ## Usage examples
 
     try {
