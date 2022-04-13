@@ -163,6 +163,28 @@ class ShiftSdkPhp
     }
 
     /**
+     * setExternalAppToken
+     *
+     * @param string $token
+     * @return void
+     */
+    public function setExternalAppToken(string $token): void
+    {
+        $this->externalAppToken = $token;
+    }
+
+    /**
+     * setCustomerApiToken
+     *
+     * @param string $token
+     * @return void
+     */
+    public function setCustomerApiToken(string $token): void
+    {
+        $this->customerApiToken = $token;
+    }
+
+    /**
      * createExternalAppToken
      *
      * @param string $apiKey
