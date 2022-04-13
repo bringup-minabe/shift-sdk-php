@@ -3,12 +3,8 @@
 ## Usage examples
 
     try {
-        $ShiftSdkPhp = new ShiftSdkPhp(
-            'http://localhost',
-            'key',
-            'secret'
-        );
-        $ShiftSdkPhp->createToken();
+        $ShiftSdkPhp = new ShiftSdkPhp('http://localhost');
+        $ShiftSdkPhp->createExternalAppToken();
     }
 
     // Exceptions

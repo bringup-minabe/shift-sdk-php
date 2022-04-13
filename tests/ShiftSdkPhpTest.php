@@ -14,11 +14,7 @@ class ShiftSdkPhpTest extends TestCase {
      */
     public function testSetApiBaseUrl()
     {
-        $ShiftSdkPhp = new ShiftSdkPhp(
-            'http://localhost',
-            'key',
-            'secret'
-        );
+        $ShiftSdkPhp = new ShiftSdkPhp('http://localhost');
         $tests = [
             'http://localhost',
             'http://localhost/',
@@ -41,11 +37,7 @@ class ShiftSdkPhpTest extends TestCase {
      */
     public function testSetEndPoint()
     {
-        $ShiftSdkPhp = new ShiftSdkPhp(
-            'http://localhost',
-            'key',
-            'secret'
-        );
+        $ShiftSdkPhp = new ShiftSdkPhp('http://localhost');
         $tests = [
             'endPoint',
             'endPoint/',
@@ -68,20 +60,16 @@ class ShiftSdkPhpTest extends TestCase {
      */
     public function testGetApiKey()
     {
+        $ShiftSdkPhp = new ShiftSdkPhp('http://localhost');
         $tests = [
             'key',
             ' key',
             'key ',
         ];
         foreach ($tests as $value) {
-            $ShiftSdkPhp = new ShiftSdkPhp(
-                'http://localhost',
-                $value,
-                'secret'
-            );
             $this->assertEquals(
                 'key',
-                $ShiftSdkPhp->getApiKey()
+                $ShiftSdkPhp->__setApiKey($value)
             );
         }
     }
@@ -93,20 +81,16 @@ class ShiftSdkPhpTest extends TestCase {
      */
     public function testGetApiSecret()
     {
+        $ShiftSdkPhp = new ShiftSdkPhp('http://localhost');
         $tests = [
             'secret',
             ' secret',
             'secret ',
         ];
         foreach ($tests as $value) {
-            $ShiftSdkPhp = new ShiftSdkPhp(
-                'http://localhost',
-                'key',
-                $value
-            );
             $this->assertEquals(
                 'secret',
-                $ShiftSdkPhp->getApiSecret()
+                $ShiftSdkPhp->__setApiSecret($value)
             );
         }
     }
