@@ -305,6 +305,21 @@ class ShiftSdkPhp
     }
 
     /**
+     * __errorMessage
+     *
+     * @param string $errorMessage
+     * @param mixed $response
+     * @return string
+     */
+    public function __errorMessage(string $errorMessage, $response): string
+    {
+        if (is_array($response) && isset($response['message'])) {
+            return $response['message'];
+        }
+        return $errorMessage;
+    }
+
+    /**
      * __postApi
      *
      * @param string $endPoint
@@ -341,17 +356,26 @@ class ShiftSdkPhp
             switch ($curl->error_code) {
                 case 401:
                     $curl->close();
-                    throw new UnauthorizedException($curl->error_message, $curl->error_code);
+                    throw new UnauthorizedException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 case 403:
                     $curl->close();
-                    throw new RoleErrorException($curl->error_message, $curl->error_code);
+                    throw new RoleErrorException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 case 404:
                     $curl->close();
-                    throw new NotFoundException($curl->error_message, $curl->error_code);
+                    throw new NotFoundException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 case 422:
@@ -365,12 +389,18 @@ class ShiftSdkPhp
 
                 case 500:
                     $curl->close();
-                    throw new InternalServerErrorException($curl->error_message, $curl->error_code);
+                    throw new InternalServerErrorException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 default:
                     $curl->close();
-                    throw new Exception($curl->error_message, $curl->error_code);
+                    throw new Exception(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
             }
         }
@@ -497,32 +527,50 @@ class ShiftSdkPhp
             switch ($curl->error_code) {
                 case 401:
                     $curl->close();
-                    throw new UnauthorizedException($curl->error_message, $curl->error_code);
+                    throw new UnauthorizedException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 case 403:
                     $curl->close();
-                    throw new RoleErrorException($curl->error_message, $curl->error_code);
+                    throw new RoleErrorException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 case 404:
                     $curl->close();
-                    throw new NotFoundException($curl->error_message, $curl->error_code);
+                    throw new NotFoundException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 case 422:
                     $curl->close();
-                    throw new UnprocessableEntityException($curl->error_message, $curl->error_code);
+                    throw new UnprocessableEntityException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 case 500:
                     $curl->close();
-                    throw new InternalServerErrorException($curl->error_message, $curl->error_code);
+                    throw new InternalServerErrorException(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
 
                 default:
                     $curl->close();
-                    throw new Exception($curl->error_message, $curl->error_code);
+                    throw new Exception(
+                        $this->__errorMessage($curl->error_message, $response),
+                        $curl->error_code
+                    );
                     break;
             }
         }
