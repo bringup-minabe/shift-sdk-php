@@ -53,6 +53,14 @@ class ShiftSdkPhp
     protected $customerApiToken;
 
     /**
+     * otherApiToken
+     *
+     * @var string
+     */
+    protected $otherApiToken;
+
+
+    /**
      * validateErrorMessages
      *
      * @var array
@@ -163,6 +171,16 @@ class ShiftSdkPhp
     }
 
     /**
+     * getOtherApiToken
+     *
+     * @return string
+     */
+    public function getOtherApiToken(): string
+    {
+        return $this->otherApiToken;
+    }
+
+    /**
      * setExternalAppToken
      *
      * @param string $token
@@ -182,6 +200,17 @@ class ShiftSdkPhp
     public function setCustomerApiToken(string $token): void
     {
         $this->customerApiToken = $token;
+    }
+
+    /**
+     * setOtherApiToken
+     *
+     * @param string $token
+     * @return void
+     */
+    public function setOtherApiToken(string $token): void
+    {
+        $this->otherApiToken = $token;
     }
 
     /**
@@ -289,6 +318,62 @@ class ShiftSdkPhp
                 throw new Exception('create token error');
             } else {
                 $this->customerApiToken = $response->token;
+            }
+        }
+        $curl->close();
+    }
+
+    /**
+     * createOtherApiToken
+     *
+     * @param string $prefix
+     * @param string $username
+     * @param string $password
+     * @param string $path
+     * @return void
+     * 
+     * @throws UnauthorizedException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws Exception
+     */
+    public function createOtherApiToken(string $prefix, string $username, string $password, string $path = 'login'): void
+    {
+        $curl = new \Curl\Curl();
+        $curl->setHeader('Accept', 'application/json');
+        $curl->post("{$this->apiBaseUrl}/" . $prefix . "/" . $path, [
+            'username' => $username,
+            'password' => $password,
+        ]);
+        if ($curl->error) {
+            switch ($curl->error_code) {
+                case 401:
+                    $curl->close();
+                    throw new UnauthorizedException($curl->error_message, $curl->error_code);
+                    break;
+
+                case 404:
+                    $curl->close();
+                    throw new NotFoundException($curl->error_message, $curl->error_code);
+                    break;
+
+                case 500:
+                    $curl->close();
+                    throw new InternalServerErrorException($curl->error_message, $curl->error_code);
+                    break;
+
+                default:
+                    $curl->close();
+                    throw new Exception($curl->error_message, $curl->error_code);
+                    break;
+            }
+        } else {
+            $response = json_decode($curl->response);
+            if (empty($response) || !isset($response->token)) {
+                $curl->close();
+                throw new Exception('create token error');
+            } else {
+                $this->otherApiToken = $response->token;
             }
         }
         $curl->close();
@@ -491,6 +576,47 @@ class ShiftSdkPhp
     }
 
     /**
+     * postOtherApi
+     *
+     * @param string $prefix
+     * @param string $endPoint
+     * @param array $data
+     * @return mixed
+     * 
+     * @throws ClientErrorException
+     * @throws UnauthorizedException
+     * @throws RoleErrorException
+     * @throws NotFoundException
+     * @throws UnprocessableEntityException
+     * @throws InternalServerErrorException
+     * @throws Exception
+     */
+    public function postOtherApi(string $prefix, string $endPoint, array $data)
+    {
+        try {
+            $response = $this->__postApi(
+                $endPoint,
+                $data,
+                $prefix,
+                $this->otherApiToken
+            );
+        } catch (UnauthorizedException $th) {
+            throw $th;
+        } catch (RoleErrorException $th) {
+            throw $th;
+        } catch (NotFoundException $th) {
+            throw $th;
+        } catch (UnprocessableEntityException $th) {
+            throw $th;
+        } catch (InternalServerErrorException $th) {
+            throw $th;
+        } catch (Exception $th) {
+            throw $th;
+        }
+        return $response;
+    }
+
+    /**
      * __getApi
      *
      * @param string $endPoint
@@ -641,6 +767,46 @@ class ShiftSdkPhp
                 $query,
                 self::CUSTOMER_API_PREFIX,
                 $this->customerApiToken
+            );
+        } catch (UnauthorizedException $th) {
+            throw $th;
+        } catch (RoleErrorException $th) {
+            throw $th;
+        } catch (NotFoundException $th) {
+            throw $th;
+        } catch (UnprocessableEntityException $th) {
+            throw $th;
+        } catch (InternalServerErrorException $th) {
+            throw $th;
+        } catch (Exception $th) {
+            throw $th;
+        }
+        return $response;
+    }
+
+    /**
+     * getOtherApi
+     *
+     * @param string $prefix
+     * @param string $endPoint
+     * @param array $query
+     * @return mixed
+     * 
+     * @throws ClientErrorException
+     * @throws UnauthorizedException
+     * @throws RoleErrorException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws Exception
+     */
+    public function getOtherApi(string $prefix, string $endPoint, array $query = [])
+    {
+        try {
+            $response = $this->__getApi(
+                $endPoint,
+                $query,
+                $prefix,
+                $this->otherApiToken
             );
         } catch (UnauthorizedException $th) {
             throw $th;
