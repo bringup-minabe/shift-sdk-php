@@ -421,7 +421,7 @@ class ShiftSdkPhp
      * @throws InternalServerErrorException
      * @throws Exception
      */
-    private function __postApi(string $endPoint, array $data, string $prefix, string $token)
+    private function __postApi(string $endPoint, array $data, string $prefix = '', string $token = '')
     {
         if ($endPoint === '') {
             throw new ClientErrorException('end point empty', 9001);
@@ -633,7 +633,7 @@ class ShiftSdkPhp
      * @throws InternalServerErrorException
      * @throws Exception
      */
-    private function __getApi(string $endPoint, array $query = [], string $prefix, string $token)
+    private function __getApi(string $endPoint, array $query = [], string $prefix = '', string $token = '')
     {
         if ($endPoint === '') {
             throw new ClientErrorException('end point empty', 9001);
